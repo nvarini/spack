@@ -109,10 +109,6 @@ configuration_paths = (
 scopes_metavar = '{defaults,system,site,user}[/PLATFORM]'
 
 
-#: config scopes only used by Spack internally
-internal_scopes = ['commands']
-
-
 def _extend_with_default(validator_class):
     """Add support for the 'default' attr for properties and patternProperties.
 
@@ -379,6 +375,55 @@ class Configuration(object):
         # take the top key off before returning.
         return merged_section[section]
 
+    def get(self, path, default=None, scope=None):
+        """Get a config section or a single value from one.
+
+        Accepts a path syntax that allows us to grab nested config map
+        entries.  Getting the 'config' section would look like::
+
+            spack.config.get('config')
+
+        and the ``dirty`` section in the ``config`` scope would be::
+
+            spack.config.get('config:dirty')
+
+        We use ``:`` as the separator, like YAML objects.
+
+        TODO: Currently only handles maps. Think about lists if neded.
+    """
+        section, _, rest = path.partition(':')
+
+        value = self.get_config(section, scope=scope)
+        if not rest:
+            return value
+
+        parts = rest.split(':')
+        while parts:
+            key = parts.pop(0)
+            value = value.get(key, default)
+        return value
+
+    def set(self, path, value, scope=None):
+        """Convenience function for setting single values in config files.
+
+        Accepts the path syntax described in ``get()``.
+        """
+        section, _, rest = path.partition(':')
+
+        if not rest:
+            self.update_config(section, value, scope=scope)
+        else:
+            section_data = self.get_config(section, scope=scope)
+
+            parts = rest.split(':')
+            data = section_data
+            while len(parts) > 1:
+                key = parts.pop(0)
+                data = data[key]
+            data[parts[0]] = value
+
+            self.update_config(section, section_data, scope=scope)
+
     def __iter__(self):
         """Iterate over scopes in this configuration."""
         for scope in self.scopes.values():
@@ -423,7 +468,7 @@ def get_configuration():
 
         # we make a special scope for spack commands so that they can
         # override configuration options.
-        _configuration.push_scope(InternalConfigScope('commands'))
+        _configuration.push_scope(InternalConfigScope('command_line'))
 
     return _configuration
 
@@ -433,17 +478,19 @@ def get_configuration():
 _configuration = None
 
 
-#: TODO: consider getting rid of these top-level wrapper functions.
-def get_config(section, scope=None):
-    """Module-level interface for ``Configuration.get_config()``."""
+def get(path, default=None, scope=None):
+    """Module-level wrapper for ``Configuration.get()``."""
     config = get_configuration()
-    return config.get_config(section, scope)
+    return config.get(path, default, scope)
 
 
-def update_config(section, update_data, scope=None):
-    """Module-level interface for ``Configuration.update_config()``."""
+def set(path, value, scope=None):
+    """Convenience function for getting single values in config files.
+
+    Accepts the path syntax described in ``get()``.
+    """
     config = get_configuration()
-    return config.update_config(section, update_data, scope)
+    return config.set(path, value, scope)
 
 
 def _validate_section_name(section):
