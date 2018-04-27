@@ -190,13 +190,14 @@ def install(parser, args, **kwargs):
 
     # 1. Abstract specs from cli
     specs = spack.cmd.parse_specs(args.package)
+    tests = False
     if args.test == 'all' or args.run_tests:
-        spack.package_testing.test_all()
+        tests = True
     elif args.test == 'root':
-        for spec in specs:
-            spack.package_testing.test(spec.name)
+        tests = [spec.name for spec in specs]
+    kwargs['tests'] = tests
 
-    specs = spack.cmd.parse_specs(args.package, concretize=True)
+    specs = spack.cmd.parse_specs(args.package, concretize=True, tests=tests)
 
     # 2. Concrete specs from yaml files
     for file in args.specfiles:
