@@ -26,9 +26,10 @@ import argparse
 
 import llnl.util.tty as tty
 
-import spack
 import spack.caches
 import spack.cmd
+import spack.repo
+import spack.stage
 
 description = "remove temporary build files and/or downloaded archives"
 section = "build"
@@ -73,7 +74,7 @@ def clean(parser, args):
         for spec in specs:
             msg = 'Cleaning build stage [{0}]'
             tty.msg(msg.format(spec.short_spec))
-            package = spack.repo.get(spec)
+            package = spack.repo.path().get(spec)
             package.do_clean()
 
     if args.stage:

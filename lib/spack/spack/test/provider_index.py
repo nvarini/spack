@@ -39,13 +39,13 @@ Tests assume that mock packages provide this::
 """
 from six import StringIO
 
-import spack
+import spack.repo
 from spack.provider_index import ProviderIndex
 from spack.spec import Spec
 
 
 def test_yaml_round_trip(mock_packages):
-    p = ProviderIndex(spack.repo.all_package_names())
+    p = ProviderIndex(spack.repo.path().all_package_names())
 
     ostream = StringIO()
     p.to_yaml(ostream)
@@ -57,7 +57,7 @@ def test_yaml_round_trip(mock_packages):
 
 
 def test_providers_for_simple(mock_packages):
-    p = ProviderIndex(spack.repo.all_package_names())
+    p = ProviderIndex(spack.repo.path().all_package_names())
 
     blas_providers = p.providers_for('blas')
     assert Spec('netlib-blas') in blas_providers
@@ -70,7 +70,7 @@ def test_providers_for_simple(mock_packages):
 
 
 def test_mpi_providers(mock_packages):
-    p = ProviderIndex(spack.repo.all_package_names())
+    p = ProviderIndex(spack.repo.path().all_package_names())
 
     mpi_2_providers = p.providers_for('mpi@2')
     assert Spec('mpich2') in mpi_2_providers
@@ -83,12 +83,12 @@ def test_mpi_providers(mock_packages):
 
 
 def test_equal(mock_packages):
-    p = ProviderIndex(spack.repo.all_package_names())
-    q = ProviderIndex(spack.repo.all_package_names())
+    p = ProviderIndex(spack.repo.path().all_package_names())
+    q = ProviderIndex(spack.repo.path().all_package_names())
     assert p == q
 
 
 def test_copy(mock_packages):
-    p = ProviderIndex(spack.repo.all_package_names())
+    p = ProviderIndex(spack.repo.path().all_package_names())
     q = p.copy()
     assert p == q

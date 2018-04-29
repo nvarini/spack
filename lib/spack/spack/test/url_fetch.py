@@ -27,7 +27,7 @@ import pytest
 
 from llnl.util.filesystem import working_dir, is_exe
 
-import spack
+import spack.repo
 import spack.config
 from spack.fetch_strategy import from_list_url, URLFetchStrategy
 from spack.spec import Spec
@@ -61,7 +61,7 @@ def test_fetch(
     spec = Spec('url-test')
     spec.concretize()
 
-    pkg = spack.repo.get('url-test')
+    pkg = spack.repo.path().get('url-test')
     pkg.url = mock_archive.url
     pkg.versions[ver('test')] = {checksum_type: checksum, 'url': pkg.url}
     pkg.spec = spec
@@ -82,7 +82,7 @@ def test_fetch(
 
 
 def test_from_list_url(mock_packages, config):
-    pkg = spack.repo.get('url-list-test')
+    pkg = spack.repo.path().get('url-list-test')
     for ver_str in ['0.0.0', '1.0.0', '2.0.0',
                     '3.0', '4.5', '2.0.0b2',
                     '3.0a1', '4.5-rc5']:

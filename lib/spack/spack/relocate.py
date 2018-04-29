@@ -26,7 +26,7 @@
 import os
 import platform
 import re
-import spack
+import spack.repo
 import spack.cmd
 from spack.util.executable import Executable, ProcessError
 from llnl.util.filesystem import filter_file
@@ -55,7 +55,7 @@ def get_patchelf():
     if platform.system() == 'Darwin':
         return None
     patchelf_spec = spack.cmd.parse_specs("patchelf", concretize=True)[0]
-    patchelf = spack.repo.get(patchelf_spec)
+    patchelf = spack.repo.path().get(patchelf_spec)
     if not patchelf.installed:
         patchelf.do_install()
     patchelf_executable = os.path.join(patchelf.prefix.bin, "patchelf")

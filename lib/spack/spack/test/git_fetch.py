@@ -28,7 +28,7 @@ import pytest
 
 from llnl.util.filesystem import working_dir, join_path, touch
 
-import spack
+import spack.repo
 import spack.config
 from spack.spec import Spec
 from spack.version import ver
@@ -92,7 +92,7 @@ def test_fetch(type_of_test,
     # Construct the package under test
     spec = Spec('git-test')
     spec.concretize()
-    pkg = spack.repo.get(spec)
+    pkg = spack.repo.path().get(spec)
     pkg.versions[ver('git')] = t.args
 
     # Enter the stage directory and check some properties

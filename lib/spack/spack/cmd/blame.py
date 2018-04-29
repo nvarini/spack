@@ -31,6 +31,7 @@ from llnl.util.filesystem import working_dir
 from llnl.util.tty.colify import colify_table
 
 import spack.paths
+import spack.repo
 from spack.util.executable import which
 from spack.cmd import spack_is_git_repo
 
@@ -71,7 +72,7 @@ def blame(parser, args):
             blame_file = path
 
     if not blame_file:
-        pkg = spack.repo.get(args.package_name)
+        pkg = spack.repo.path().get(args.package_name)
         blame_file = pkg.module.__file__.rstrip('c')  # .pyc -> .py
 
     # get git blame for the package

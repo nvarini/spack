@@ -37,7 +37,8 @@ from six import StringIO
 import llnl.util.tty as tty
 from llnl.util.tty.colify import colify
 
-import spack
+import spack.dependency
+import spack.repo
 import spack.cmd.common.arguments as arguments
 
 description = "list and search available packages"
@@ -95,7 +96,7 @@ def filter_by_name(pkgs, args):
                 if f.match(p):
                     return True
 
-                pkg = spack.repo.get(p)
+                pkg = spack.repo.path().get(p)
                 if pkg.__doc__:
                     return f.match(pkg.__doc__)
                 return False
@@ -144,7 +145,7 @@ def rows_for_ncols(elts, ncols):
 def rst(pkg_names):
     """Print out information on all packages in restructured text."""
 
-    pkgs = [spack.repo.get(name) for name in pkg_names]
+    pkgs = [spack.repo.path().get(name) for name in pkg_names]
 
     print('.. _package-list:')
     print()
@@ -184,7 +185,7 @@ def rst(pkg_names):
                                    reversed(sorted(pkg.versions))))
             print()
 
-        for deptype in spack.all_deptypes:
+        for deptype in spack.dependency.all_deptypes:
             deps = pkg.dependencies_of_type(deptype)
             if deps:
                 print('%s Dependencies' % deptype.capitalize())
@@ -208,7 +209,7 @@ def html(pkg_names):
     """
 
     # Read in all packages
-    pkgs = [spack.repo.get(name) for name in pkg_names]
+    pkgs = [spack.repo.path().get(name) for name in pkg_names]
 
     # Start at 2 because the title of the page from Sphinx is id1.
     span_id = 2
@@ -272,7 +273,7 @@ def html(pkg_names):
             print(', '.join(str(v) for v in reversed(sorted(pkg.versions))))
             print('</dd>')
 
-        for deptype in spack.all_deptypes:
+        for deptype in spack.dependency.all_deptypes:
             deps = pkg.dependencies_of_type(deptype)
             if deps:
                 print('<dt>%s Dependencies:</dt>' % deptype.capitalize())
@@ -295,13 +296,14 @@ def html(pkg_names):
 
 def list(parser, args):
     # Retrieve the names of all the packages
-    pkgs = set(spack.repo.all_package_names())
+    pkgs = set(spack.repo.path().all_package_names())
     # Filter the set appropriately
     sorted_packages = filter_by_name(pkgs, args)
 
     # Filter by tags
     if args.tags:
-        packages_with_tags = set(spack.repo.packages_with_tags(*args.tags))
+        packages_with_tags = set(
+            spack.repo.path().packages_with_tags(*args.tags))
         sorted_packages = set(sorted_packages) & packages_with_tags
         sorted_packages = sorted(sorted_packages)
 

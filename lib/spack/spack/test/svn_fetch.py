@@ -28,7 +28,7 @@ import pytest
 
 from llnl.util.filesystem import join_path, touch, working_dir
 
-import spack
+import spack.repo
 import spack.config
 from spack.spec import Spec
 from spack.version import ver
@@ -64,7 +64,7 @@ def test_fetch(
     # Construct the package under test
     spec = Spec('svn-test')
     spec.concretize()
-    pkg = spack.repo.get(spec)
+    pkg = spack.repo.path().get(spec)
     pkg.versions[ver('svn')] = t.args
 
     # Enter the stage directory and check some properties

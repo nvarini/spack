@@ -28,7 +28,7 @@ import pytest
 
 from llnl.util.filesystem import join_path
 
-import spack
+import spack.repo
 import spack.mirror
 import spack.util.executable
 from spack.spec import Spec
@@ -53,7 +53,7 @@ def set_up_package(name, repository, url_attr):
     spec = Spec(name)
     spec.concretize()
     # Get the package and fix its fetch args to point to a mock repo
-    pkg = spack.repo.get(spec)
+    pkg = spack.repo.path().get(spec)
 
     repos[name] = repository
 

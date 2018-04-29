@@ -34,7 +34,7 @@ import argparse
 
 from llnl.util.filesystem import mkdirp
 
-import spack
+import spack.repo
 import spack.store
 import spack.binary_distribution as bindist
 import spack.cmd.buildcache as buildcache
@@ -78,7 +78,7 @@ def test_buildcache(mock_archive, tmpdir):
     # tweak patchelf to only do a download
     spec = Spec("patchelf")
     spec.concretize()
-    pkg = spack.repo.get(spec)
+    pkg = spack.repo.path().get(spec)
     fake_fetchify(pkg.fetcher, pkg)
     mkdirp(os.path.join(pkg.prefix, "bin"))
     patchelfscr = os.path.join(pkg.prefix, "bin", "patchelf")

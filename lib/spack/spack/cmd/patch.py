@@ -26,7 +26,7 @@ import argparse
 
 import llnl.util.tty as tty
 
-import spack
+import spack.repo
 import spack.cmd
 import spack.cmd.common.arguments as arguments
 
@@ -52,5 +52,5 @@ def patch(parser, args):
 
     specs = spack.cmd.parse_specs(args.packages, concretize=True)
     for spec in specs:
-        package = spack.repo.get(spec)
+        package = spack.repo.path().get(spec)
         package.do_patch()

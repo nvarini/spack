@@ -23,7 +23,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 import llnl.util.tty as tty
-import spack
+
+import spack.repo
 import spack.cmd
 import spack.cmd.common.arguments as arguments
 
@@ -78,5 +79,5 @@ def bootstrap(parser, args, **kwargs):
             tty.msg("Installing %s to satisfy requirement for %s" %
                     (spec_to_install, requirement))
             kwargs['explicit'] = True
-            package = spack.repo.get(spec_to_install)
+            package = spack.repo.path().get(spec_to_install)
             package.do_install(**kwargs)

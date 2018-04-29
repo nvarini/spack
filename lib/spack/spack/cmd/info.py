@@ -25,15 +25,15 @@
 from __future__ import print_function
 
 import textwrap
-
 from six.moves import zip_longest
 
+import llnl.util.tty.color as color
 from llnl.util.tty.colify import colify
 
-import llnl.util.tty.color as color
-import spack
-import spack.fetch_strategy as fs
+import spack.repo
 import spack.spec
+import spack.fetch_strategy as fs
+
 
 description = 'get detailed information on a particular package'
 section = 'basic'
@@ -250,5 +250,5 @@ def print_text_info(pkg):
 
 
 def info(parser, args):
-    pkg = spack.repo.get(args.name)
+    pkg = spack.repo.path().get(args.name)
     print_text_info(pkg)

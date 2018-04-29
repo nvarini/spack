@@ -29,11 +29,11 @@ import argparse
 import llnl.util.tty as tty
 from llnl.util.tty.colify import colify
 
-import spack
 import spack.cmd
 import spack.concretize
 import spack.config
 import spack.mirror
+import spack.repo
 import spack.cmd.common.arguments as arguments
 from spack.spec import Spec
 from spack.error import SpackError
@@ -178,7 +178,7 @@ def mirror_create(args):
 
         # If nothing is passed, use all packages.
         if not specs:
-            specs = [Spec(n) for n in spack.repo.all_package_names()]
+            specs = [Spec(n) for n in spack.repo.path().all_package_names()]
             specs.sort(key=lambda s: s.format("$_$@").lower())
 
         # If the user asked for dependencies, traverse spec DAG get them.

@@ -26,8 +26,9 @@ import argparse
 
 import llnl.util.tty as tty
 
-import spack
 import spack.cmd
+import spack.config
+import spack.repo
 import spack.cmd.common.arguments as arguments
 
 description = "fetch archives for packages"
@@ -59,7 +60,7 @@ def fetch(parser, args):
     for spec in specs:
         if args.missing or args.dependencies:
             for s in spec.traverse():
-                package = spack.repo.get(s)
+                package = spack.repo.path().get(s)
 
                 # Skip already-installed packages with --missing
                 if args.missing and package.installed:
@@ -71,5 +72,5 @@ def fetch(parser, args):
 
                 package.do_fetch()
 
-        package = spack.repo.get(spec)
+        package = spack.repo.path().get(spec)
         package.do_fetch()

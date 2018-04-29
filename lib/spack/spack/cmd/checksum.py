@@ -27,8 +27,9 @@ from __future__ import print_function
 import argparse
 
 import llnl.util.tty as tty
-import spack
+
 import spack.cmd
+import spack.repo
 import spack.util.crypto
 import spack.util.web
 from spack.util.naming import valid_fully_qualified_module_name
@@ -57,7 +58,7 @@ def checksum(parser, args):
         tty.die("`spack checksum` accepts package names, not URLs.")
 
     # Get the package we're going to generate checksums for
-    pkg = spack.repo.get(args.package)
+    pkg = spack.repo.path().get(args.package)
 
     if args.versions:
         # If the user asked for specific versions, use those

@@ -26,8 +26,10 @@ import argparse
 
 import llnl.util.tty as tty
 
-import spack
 import spack.cmd
+import spack.repo
+import spack.store
+import spack.spec
 import spack.binary_distribution as bindist
 
 description = "create, download and install binary packages"
@@ -243,7 +245,7 @@ def install_tarball(spec, args):
     for d in s.dependencies(deptype=('link', 'run')):
         tty.msg("Installing buildcache for dependency spec %s" % d)
         install_tarball(d, args)
-    package = spack.repo.get(spec)
+    package = spack.repo.path().get(spec)
     if s.concrete and package.installed and not args.force:
         tty.warn("Package for spec %s already installed." % spec.format())
     else:

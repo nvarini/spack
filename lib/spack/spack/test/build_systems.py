@@ -26,6 +26,7 @@
 import spack
 import pytest
 
+import spack.repo
 from spack.build_environment import get_std_cmake_args
 from spack.spec import Spec
 
@@ -34,13 +35,13 @@ def test_cmake_std_args(config, mock_packages):
     # Call the function on a CMakePackage instance
     s = Spec('cmake-client')
     s.concretize()
-    pkg = spack.repo.get(s)
+    pkg = spack.repo.path().get(s)
     assert pkg.std_cmake_args == get_std_cmake_args(pkg)
 
     # Call it on another kind of package
     s = Spec('mpich')
     s.concretize()
-    pkg = spack.repo.get(s)
+    pkg = spack.repo.path().get(s)
     assert get_std_cmake_args(pkg)
 
 
@@ -50,7 +51,7 @@ class TestAutotoolsPackage(object):
     def test_with_or_without(self):
         s = Spec('a')
         s.concretize()
-        pkg = spack.repo.get(s)
+        pkg = spack.repo.path().get(s)
 
         # Called without parameters
         options = pkg.with_or_without('foo')
