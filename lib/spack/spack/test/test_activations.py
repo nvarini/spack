@@ -22,14 +22,14 @@
 # License along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
-
-import spack
-from llnl.util.filesystem import join_path
-from spack.directory_layout import YamlDirectoryLayout
-from spack.filesystem_view import YamlFilesystemView
-
 import os
 import pytest
+
+from llnl.util.filesystem import join_path
+
+import spack.spec
+from spack.directory_layout import YamlDirectoryLayout
+from spack.filesystem_view import YamlFilesystemView
 
 
 class FakeExtensionPackage(object):
